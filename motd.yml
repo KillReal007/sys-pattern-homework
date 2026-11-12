@@ -1,0 +1,21 @@
+---
+- name: Change MOTD Greeting with Host Info
+  hosts: localhost
+  become: yes
+  vars:
+    motd_message: |
+      ==========================================
+      Добро пожаловать на хост!
+      
+      IP-адрес: {{ ansible_default_ipv4.address | default('N/A') }}
+      Hostname: {{ ansible_hostname }}
+      
+      Хорошего дня, системный администратор!
+      ==========================================
+
+  tasks:
+    - name: Update /etc/motd
+      ansible.builtin.copy:
+        content: "{{ motd_message }}"
+        dest: /etc/motd
+        mode: '0644'

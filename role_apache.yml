@@ -1,0 +1,8 @@
+---
+- name: Configure Apache web server with system facts
+  hosts: localhost
+  become: yes
+  gather_facts: yes
+
+  roles:
+    - apache_web

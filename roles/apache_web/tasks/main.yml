@@ -1,0 +1,36 @@
+---
+- name: Install Apache web server
+  ansible.builtin.package:
+    name: apache2
+    state: present
+    update_cache: yes
+
+- name: Ensure Apache is started and enabled
+  ansible.builtin.service:
+    name: apache2
+    state: started
+    enabled: yes
+
+- name: Configure index.html with system facts
+  ansible.builtin.template:
+    src: index.html.j2
+    dest: /var/www/html/index.html
+    mode: '0644'
+  notify: Restart Apache
+
+- name: Ensure port 80 is open in UFW (if installed)
+  ansible.builtin.ufw:
+    rule: allow
+    port: '80'
+    proto: tcp
+  when: ansible_facts['os_family'] == "Debian"
+  ignore_errors: yes
+
+- name: Check website availability
+  ansible.builtin.uri:
+    url: "http://{{ ansible_default_ipv4.address | default('localhost') }}"
+    status_code: 200
+  register: uri_result
+  until: uri_result.status == 200
+  retries: 3
+  delay: 2

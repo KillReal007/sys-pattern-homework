@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>System Info</title>
+    <style>
+        body { font-family: monospace; padding: 20px; }
+        h1 { color: #333; }
+        .info { background: #f4f4f4; padding: 15px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Характеристики компьютера</h1>
+    <div class="info">
+        <p><strong>Hostname:</strong> {{ ansible_hostname }}</p>
+        <p><strong>IP-адрес:</strong> {{ ansible_default_ipv4.address | default('N/A') }}</p>
+        <p><strong>CPU:</strong> {{ ansible_processor[2] | default(ansible_processor[1]) | default('N/A') }}</p>
+        <p><strong>RAM:</strong> {{ (ansible_memtotal_mb / 1024) | round(2) }} GB</p>
+        <p><strong>Первый HDD:</strong> {{ ansible_devices[ansible_devices.keys() | first].size | default('N/A') }}</p>
+    </div>
+</body>
+</html>
